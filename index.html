@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07070f">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <title>PIXELREX · Browser-Arcade</title>
+  <meta name="description" content="Endlos-Läufer im Browser: Spring mit dem neon-pinken Pixelrex über Kristalle, dück dich unter Drohnen durch und lauf so weit wie möglich. Mit Tastatur oder Touch spielbar.">
+</head>
+<body style="--ak:var(--pink)">
+  <div class="raster" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="kopf"><nav class="container nav" aria-label="Hauptnavigation">
+    <a class="marke" href="./"><span class="logo">▶</span>GAMES</a>
+    <div class="nav-links"><a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a></div>
+  </nav></header>
+  <main id="main" class="container">
+    <div class="spiel-kopf"><div><h1>PIXELREX</h1><p class="unterzeile">Spring, duck dich und lauf, so weit du kannst.</p></div></div>
+    <div class="hud">
+      <div class="hud-feld"><div class="label">Punkte</div><div class="wert" id="hud-punkte">0</div></div>
+      <div class="hud-feld"><div class="label">Rekord</div><div class="wert" id="hud-rekord">0</div></div>
+      <div class="hud-feld"><div class="label">Welt</div><div class="wert" id="hud-welt">1</div></div>
+    </div>
+    <div class="buehne">
+      <!-- Logisch 640x240 Pixel. Die CSS-Breite (100%, max. 960px) skaliert das Bild nur;
+           die Spiellogik rechnet immer in den 640er-Koordinaten. -->
+      <canvas id="leinwand" width="640" height="240" role="img"
+              aria-label="Pixelrex-Spielfeld: ein pinker Pixel-Dino läuft über einen Neon-Boden und weicht Kristallen und Drohnen aus"
+              style="max-width:960px;margin-inline:auto;image-rendering:pixelated"></canvas>
+    </div>
+    <p class="steuerung"><span class="nur-tastatur">Springen mit <kbd>Leertaste</kbd>, <kbd>↑</kbd> oder <kbd>W</kbd> (länger halten = höher), ducken mit <kbd>↓</kbd> oder <kbd>S</kbd> · <kbd>P</kbd> Pause.</span><span class="nur-touch">Rechte Taste oder Tippen aufs Feld springt (länger halten = höher), die linke Taste duckt. Tipp: Im Querformat und mit <strong>Spielmodus</strong> wird das Feld am größten.</span></p>
+    <section style="max-width:420px;margin-top:36px"><h2 style="font-family:var(--pixel);font-weight:400;font-size:.85rem">Lokale Top 3</h2><div id="topliste"></div>
+      <button class="knopf" id="reset" style="margin-top:10px">Spielstand zurücksetzen</button></section>
+    <section class="lernbox"><details open><summary>Anleitung &amp; Regeln</summary>
+      <p><strong>Ziel:</strong> Lauf mit dem Pixelrex so weit wie möglich, ohne ein Hindernis zu berühren.</p>
+      <ul>
+        <li>Alle 10 gelaufenen Einheiten gibt es 1 Punkt (angezeigt als Meter). Der Rekord ist deine beste Weite.</li>
+        <li>Das Tempo steigt langsam, aber stetig, bis es bei einem Höchstwert bleibt.</li>
+        <li>Unterwegs wechselt die Welt: Kristallwüste, Abendsonne (ab 250 m), Vulkan (ab 500 m, mit breiten <strong>Lavapfützen</strong>: rechtzeitig, aber nicht zu früh springen), Eishöhle (ab 800 m, mit <strong>Eiszapfen</strong>: Springen hilft nicht, nur Ducken) und Sternennacht (ab 1.100 m, alles zusammen).</li>
+        <li>Erreichte Welten kannst du unten direkt anwählen. Die Meter zählen trotzdem ab 0.</li>
+        <li>Neon-Kristalle und Energiesäulen am Boden überspringst du. Je länger du die Sprungtaste hältst, desto höher fliegst du.</li>
+        <li>Ab etwa 300 m kommen Drohnen. Eine tiefe Drohne überspringst du oder du duckst dich darunter, unter einer hohen Drohne läufst du einfach durch.</li>
+        <li>Wer in der Luft duckt, fällt schneller zurück zum Boden.</li>
+        <li>Game Over bei jeder Berührung. Mit <code>P</code> pausierst du, ein Tabwechsel pausiert automatisch.</li>
+      </ul>
+    </details></section>
+
+    <section class="lernbox"><details><summary>Wie funktioniert der Code?</summary>
+      <p><strong>Die Welt läuft, nicht der Rex.</strong> Der Rex steht immer bei <code>x = 72</code>. Stattdessen schieben wir Hindernisse, Bodenmarken und Hintergrund pro Schritt um <code>tempo * SCHRITT</code> nach links. Dadurch brauchen wir keine Kamera, und die Kollisionsrechnung bleibt einfach, weil sich nur eine Achse des Rex ändert: seine Höhe.</p>
+      <p><strong>Physik mit festem Zeitschritt.</strong> Ein Sprung ist eine Wurfparabel: Die Gravitation zieht die Geschwindigkeit pro Sekunde um 2400 Pixel nach unten, die Geschwindigkeit verschiebt die Höhe. Würden wir mit der Zeit seit dem letzten Frame rechnen, fiele die Sprunghöhe je nach Bildrate minimal unterschiedlich aus. Darum sammelt ein <em>Akkumulator</em> die Zeit und verbraucht sie in festen Portionen von 1/240 Sekunde, wie bei Snake. Die Formeln dazu (<code>luftzeit</code>, <code>sprunghoehe</code>) stehen in <code>logik.js</code>.</p>
+      <p><strong>Kollision per AABB.</strong> Jede Figur bekommt ein achsenparalleles Rechteck (<em>Axis-Aligned Bounding Box</em>). Zwei Rechtecke überlappen sich genau dann, wenn sie sich auf der x-Achse UND auf der y-Achse überlappen, das sind vier Vergleiche. Die Hitboxen sind absichtlich ein paar Pixel kleiner als die Grafik: Ecken, Stacheln und Kristallspitzen sind optisch leer, ein Treffer dort fühlte sich unfair an.</p>
+      <p><strong>Warum der Abstand zwischen Hindernissen mit dem Tempo wächst.</strong> Ein Sprung dauert immer rund 0,63 Sekunden, egal wie schnell die Welt läuft. Bei hohem Tempo legt der Rex in dieser Zeit aber viel mehr Strecke zurück. Mit einer festen Lücke in Pixeln läge das nächste Hindernis irgendwann schon vor der Landung, und das Spiel wäre unschaffbar. <code>mindestAbstand</code> rechnet deshalb in Zeit (Luftzeit plus Reaktionspuffer) und wandelt sie mit <code>Strecke = Tempo * Zeit</code> in Pixel um. Ein Zufallszuschlag sorgt für Abwechslung.</p>
+      <p><strong>Eingabe-Puffer und variable Sprunghöhe.</strong> Wer die Taste einen Wimpernschlag zu früh drückt, soll nicht bestraft werden: Der Wunsch wird 0,12 Sekunden gemerkt und beim Landen eingelöst. Lässt man die Taste los, solange der Rex noch steigt, wird seine Geschwindigkeit begrenzt (<code>sprungKappen</code>), und der Sprung fällt niedriger aus.</p>
+      <p><strong>Pixel-Kunst aus Text.</strong> Der Rex ist ein Array aus Zeichenketten: Jedes Zeichen steht für ein Quadrat (<code>#</code> Körper, <code>e</code> Auge, <code>.</code> leer). Eine kleine Schleife malt daraus <code>fillRect</code>-Rechtecke. Kristalle, Säulen und Drohnen entstehen aus Pfaden (<code>moveTo</code>, <code>lineTo</code>). Die Farben liest <code>lesFarbe</code> per <code>getComputedStyle</code> aus den CSS-Variablen.</p>
+      <p><strong>Parallaxe.</strong> Zwei Hintergrundebenen wandern unterschiedlich schnell (12 % und 35 % des Bodentempos). Das täuscht Tiefe vor. Wer im Betriebssystem &quot;Bewegung reduzieren&quot; eingestellt hat, sieht die Ebenen stillstehen, Staubwolken und Funken entfallen ganz (<code>bewegungReduziert()</code>).</p>
+      <p><strong>Touch.</strong> <code>pointerdown</code> löst den Sprung aus, Finger halten und nach unten ziehen duckt. <code>touch-action: none</code> verhindert, dass der Browser dabei die Seite scrollt.</p>
+    </details></section>
+  </main>
+  <footer class="fuss"><div class="container fuss-in"><span>Browser-Arcade · Open Source</span><nav aria-label="Rechtliches"><a href="./impressum.html">Impressum</a><a href="./datenschutz.html">Datenschutz</a></nav></div></footer>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
