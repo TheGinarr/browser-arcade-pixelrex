@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    Ein Baustein, den jede Arcade-Seite mit EINEM Aufruf einbindet:
 
-     import { spielSeite, istTouch } from "./assets/mobil.js";
+     import { spielSeite, istTouch } from "../assets/mobil.js";
      const mobil = spielSeite({
        phase: () => phase,                       // aktuelle Spielphase
        gamepad: { links: "kreuz", rechts: [] },  // Tasten am Handy
@@ -52,10 +52,14 @@ if (imBrowser) {
   const grob = window.matchMedia("(pointer: coarse)");
   if (grob.matches) html.classList.add("touch");
   grob.addEventListener?.("change", () => html.classList.toggle("touch", grob.matches));
-  window.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "touch" || e.pointerType === "pen") html.classList.add("touch");
-    else if (e.pointerType === "mouse" && !grob.matches) html.classList.remove("touch");
-  }, true);
+  window.addEventListener(
+    "pointerdown",
+    (e) => {
+      if (e.pointerType === "touch" || e.pointerType === "pen") html.classList.add("touch");
+      else if (e.pointerType === "mouse" && !grob.matches) html.classList.remove("touch");
+    },
+    true,
+  );
 }
 
 /** true, wenn gerade mit dem Finger gespielt wird (für Texte im Canvas). */
@@ -73,18 +77,18 @@ export function text(tastatur, touch) {
    liefert. Die Spiele vergleichen key.toLowerCase(), daher passt
    "ArrowUp" zu ihrem "arrowup". */
 export const TASTE = {
-  hoch:   { key: "ArrowUp",    zeichen: "▲", name: "Hoch" },
-  runter: { key: "ArrowDown",  zeichen: "▼", name: "Runter" },
-  links:  { key: "ArrowLeft",  zeichen: "◀", name: "Links" },
+  hoch: { key: "ArrowUp", zeichen: "▲", name: "Hoch" },
+  runter: { key: "ArrowDown", zeichen: "▼", name: "Runter" },
+  links: { key: "ArrowLeft", zeichen: "◀", name: "Links" },
   rechts: { key: "ArrowRight", zeichen: "▶", name: "Rechts" },
-  leer:   { key: " ",          zeichen: "●", name: "Aktion" },
-  pause:  { key: "p",          zeichen: "❚❚", name: "Pause" },
+  leer: { key: " ", zeichen: "●", name: "Aktion" },
+  pause: { key: "p", zeichen: "❚❚", name: "Pause" },
 };
 
 /* ---------- Künstliche Tastendrücke -------------------------- */
 function tasteSenden(typ, key) {
   const ereignis = new KeyboardEvent(typ, { key, bubbles: true, cancelable: true });
-  ereignis.vomGamepad = true;            // damit der Tasten-Wächter (Punkt 6) es durchlässt
+  ereignis.vomGamepad = true; // damit der Tasten-Wächter (Punkt 6) es durchlässt
   document.dispatchEvent(ereignis);
 }
 
@@ -105,7 +109,9 @@ export function ansage(nachricht) {
   // Erst leeren, dann (kurz versetzt) setzen: so wird auch dieselbe
   // Meldung zweimal hintereinander erneut vorgelesen.
   ansageBox.textContent = "";
-  setTimeout(() => { ansageBox.textContent = nachricht; }, 60);
+  setTimeout(() => {
+    ansageBox.textContent = nachricht;
+  }, 60);
 }
 
 /* ============================================================
@@ -148,7 +154,12 @@ export function spielSeite(optionen = {}) {
     const def = gp[seite];
     if (def === "kreuz") {
       gruppe.classList.add("gp-kreuz");
-      for (const [richtung, t] of [["hoch", TASTE.hoch], ["links", TASTE.links], ["rechts", TASTE.rechts], ["runter", TASTE.runter]]) {
+      for (const [richtung, t] of [
+        ["hoch", TASTE.hoch],
+        ["links", TASTE.links],
+        ["rechts", TASTE.rechts],
+        ["runter", TASTE.runter],
+      ]) {
         gruppe.append(tastenKnopf(t, `gp-${richtung}`, true));
       }
     } else if (Array.isArray(def)) {
@@ -168,7 +179,11 @@ export function spielSeite(optionen = {}) {
     if (gleiten) k.dataset.gleiten = "";
     if (t.breit) k.classList.add("gp-breit");
     k.setAttribute("aria-label", t.name);
-    k.innerHTML = `<span aria-hidden="true">${t.zeichen}</span>${t.beschriftung ? `<small aria-hidden="true">${t.beschriftung}</small>` : ""}`;
+    const zeichen = `<span aria-hidden="true">${t.zeichen}</span>`;
+    const beschriftung = t.beschriftung
+      ? `<small aria-hidden="true">${t.beschriftung}</small>`
+      : "";
+    k.innerHTML = zeichen + beschriftung;
     return k;
   }
 
@@ -176,10 +191,25 @@ export function spielSeite(optionen = {}) {
   leiste.className = "werkzeugleiste";
   const knoepfe = [];
   if (optionen.pauseKnopf !== false) {
-    knoepfe.push(`<button type="button" class="wz-knopf" data-aktion="pause" aria-label="Pause oder weiter"><span aria-hidden="true">❚❚</span> Pause</button>`);
+    knoepfe.push(`
+      <button type="button" class="wz-knopf" data-aktion="pause" aria-label="Pause oder weiter">
+        <span aria-hidden="true">❚❚</span> Pause
+      </button>`);
   }
-  knoepfe.push(`<button type="button" class="wz-knopf" data-aktion="spielmodus" aria-pressed="false"><span aria-hidden="true">⛶</span> <span class="wz-text">Spielmodus</span></button>`);
-  knoepfe.push(`<button type="button" class="wz-knopf" data-aktion="crt" aria-pressed="false" aria-label="Röhren-Look (Scanlines)"><span aria-hidden="true">▤</span> Röhre</button>`);
+  knoepfe.push(`
+    <button type="button" class="wz-knopf" data-aktion="spielmodus" aria-pressed="false">
+      <span aria-hidden="true">⛶</span> <span class="wz-text">Spielmodus</span>
+    </button>`);
+  knoepfe.push(`
+    <button
+      type="button"
+      class="wz-knopf"
+      data-aktion="crt"
+      aria-pressed="false"
+      aria-label="Röhren-Look (Scanlines)"
+    >
+      <span aria-hidden="true">▤</span> Röhre
+    </button>`);
   leiste.innerHTML = knoepfe.join("");
 
   steuer.append(pad, leiste);
@@ -216,15 +246,24 @@ export function spielSeite(optionen = {}) {
   pad.addEventListener("pointerdown", (e) => {
     const knopf = e.target.closest(".gp-taste");
     if (!knopf) return;
-    e.preventDefault();                       // kein Fokus-Sprung, kein Doppeltipp-Zoom
-    try { pad.setPointerCapture(e.pointerId); } catch { /* z. B. künstliche Zeiger in Tests */ }
+    e.preventDefault(); // kein Fokus-Sprung, kein Doppeltipp-Zoom
+    try {
+      pad.setPointerCapture(e.pointerId);
+    } catch {
+      /* z. B. künstliche Zeiger in Tests */
+    }
     druecken(e.pointerId, knopf);
   });
   pad.addEventListener("pointermove", (e) => {
     const alt = aktiv.get(e.pointerId);
     if (!alt || !("gleiten" in alt.dataset)) return;
     const unter = document.elementFromPoint(e.clientX, e.clientY)?.closest(".gp-taste");
-    if (unter && unter !== alt && "gleiten" in unter.dataset && unter.parentElement === alt.parentElement) {
+    if (
+      unter &&
+      unter !== alt &&
+      "gleiten" in unter.dataset &&
+      unter.parentElement === alt.parentElement
+    ) {
       loslassen(e.pointerId);
       druecken(e.pointerId, unter);
     }
@@ -235,7 +274,7 @@ export function spielSeite(optionen = {}) {
   // Tastatur-Bedienung der Knöpfe selbst (Tab + Enter): kurzer Druck
   pad.addEventListener("click", (e) => {
     const knopf = e.target.closest(".gp-taste");
-    if (!knopf || e.detail !== 0) return;     // detail 0 = per Tastatur ausgelöst
+    if (!knopf || e.detail !== 0) return; // detail 0 = per Tastatur ausgelöst
     tasteSenden("keydown", knopf.dataset.taste);
     tasteSenden("keyup", knopf.dataset.taste);
   });
@@ -265,7 +304,7 @@ export function spielSeite(optionen = {}) {
     } else if (aktion === "spielmodus") {
       spielmodus(!document.body.classList.contains("spielmodus"));
     }
-    knopf.blur();                              // sonst würde die Leertaste den Knopf erneut drücken
+    knopf.blur(); // sonst würde die Leertaste den Knopf erneut drücken
   });
 
   /* ---------- Spielmodus (Vollbild) -------------------------- */
@@ -280,11 +319,17 @@ export function spielSeite(optionen = {}) {
           await html.requestFullscreen({ navigationUI: "hide" });
           echtesVollbild = true;
         }
-      } catch { echtesVollbild = false; }
+      } catch {
+        echtesVollbild = false;
+      }
       window.scrollTo(0, 0);
     } else if (document.fullscreenElement) {
       echtesVollbild = false;
-      try { await document.exitFullscreen(); } catch { /* egal */ }
+      try {
+        await document.exitFullscreen();
+      } catch {
+        /* egal */
+      }
     }
     requestAnimationFrame(einpassen);
   }
@@ -365,28 +410,50 @@ export function spielSeite(optionen = {}) {
      Solange gespielt wird, verwerfen wir jede Wisch-Bewegung über
      der Seite. Nur ein touchmove-Listener mit passive:false darf
      preventDefault() aufrufen. */
-  document.addEventListener("touchmove", (e) => {
-    if (document.body.classList.contains("spiel-laeuft") || e.target.closest?.(".arcade-buehne, .steuerbereich")) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (
+        document.body.classList.contains("spiel-laeuft") ||
+        e.target.closest?.(".arcade-buehne, .steuerbereich")
+      ) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
 
   /* ---------- Tasten-Wächter (Punkt 6) -----------------------
      Läuft im Capture der window-Ebene, also VOR den Listenern der
      Spiele (die am document hängen). */
-  const SPIELTASTEN = new Set([" ", "enter", "arrowup", "arrowdown", "arrowleft", "arrowright", "w", "a", "s", "d"]);
-  window.addEventListener("keydown", (e) => {
-    if (e.vomGamepad || e.ctrlKey || e.metaKey || e.altKey) return;
-    const p = phase();
-    if (p === "laeuft" || p === "pause") return;
-    if (!SPIELTASTEN.has(e.key.toLowerCase())) return;
-    if (document.getElementById("spiel-dialog")) return;
-    const r = buehne.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const kopfH = kopf?.offsetHeight ?? 0;
-    const sichtbar = r.bottom > kopfH + 60 && r.top < vh - 60;
-    if (!sichtbar) e.stopImmediatePropagation();   // Seite scrollt normal weiter
-  }, true);
+  const SPIELTASTEN = new Set([
+    " ",
+    "enter",
+    "arrowup",
+    "arrowdown",
+    "arrowleft",
+    "arrowright",
+    "w",
+    "a",
+    "s",
+    "d",
+  ]);
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.vomGamepad || e.ctrlKey || e.metaKey || e.altKey) return;
+      const p = phase();
+      if (p === "laeuft" || p === "pause") return;
+      if (!SPIELTASTEN.has(e.key.toLowerCase())) return;
+      if (document.getElementById("spiel-dialog")) return;
+      const r = buehne.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const kopfH = kopf?.offsetHeight ?? 0;
+      const sichtbar = r.bottom > kopfH + 60 && r.top < vh - 60;
+      if (!sichtbar) e.stopImmediatePropagation(); // Seite scrollt normal weiter
+    },
+    true,
+  );
 
   /* ---------- HUD-Ansagen ------------------------------------ */
   const ANSAGEN = ["leben", "level", "runde", "welle"];

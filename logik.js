@@ -23,32 +23,32 @@
 /* ---------- Spielfeld ---------- */
 export const BREITE = 640;
 export const HOEHE = 240;
-export const BODEN_Y = 190;            // y-Koordinate der Bodenlinie
-export const REX_X = 72;               // der Rex bleibt links stehen, die Welt läuft an ihm vorbei
+export const BODEN_Y = 190; // y-Koordinate der Bodenlinie
+export const REX_X = 72; // der Rex bleibt links stehen, die Welt läuft an ihm vorbei
 
 /* ---------- Rex: sichtbare Größe (Pixel auf dem Canvas) ---------- */
 export const REX_STEHEN = { b: 56, h: 44 };
 export const REX_DUCKEN = { b: 56, h: 24 };
 
 /* ---------- Physik ---------- */
-export const GRAVITATION = 2400;       // Pixel pro Sekunde² (zieht nach unten)
-export const SPRUNG_V = 760;           // Startgeschwindigkeit nach oben beim Absprung (px/s)
-export const SPRUNG_KAPPE_V = 560;     // wer die Taste früh loslässt, wird auf dieses Tempo gebremst
-export const SCHNELLFALL = 2.2;        // Ducken in der Luft: Fallbeschleunigung x 2,2
+export const GRAVITATION = 2400; // Pixel pro Sekunde² (zieht nach unten)
+export const SPRUNG_V = 760; // Startgeschwindigkeit nach oben beim Absprung (px/s)
+export const SPRUNG_KAPPE_V = 560; // wer die Taste früh loslässt, wird auf dieses Tempo gebremst
+export const SCHNELLFALL = 2.2; // Ducken in der Luft: Fallbeschleunigung x 2,2
 
 /* ---------- Tempo und Punkte ---------- */
-export const START_TEMPO = 260;        // Pixel pro Sekunde zu Beginn
-export const TEMPO_ANSTIEG = 5;        // so viel schneller wird es pro Sekunde (px/s je s)
-export const MAX_TEMPO = 600;          // schneller wird es nie
+export const START_TEMPO = 260; // Pixel pro Sekunde zu Beginn
+export const TEMPO_ANSTIEG = 5; // so viel schneller wird es pro Sekunde (px/s je s)
+export const MAX_TEMPO = 600; // schneller wird es nie
 export const EINHEITEN_PRO_PUNKT = 10; // 10 gelaufene Pixel = 1 Punkt ("1 m")
 
 /* ---------- Hindernisse ---------- */
-export const REAKTIONSZEIT = 0.2;      // Sekunden Puffer nach der Landung (siehe mindestAbstand)
-export const ZUSATZ_ZEIT_MAX = 0.9;    // bis zu so viele Sekunden extra Lücke, zufällig
+export const REAKTIONSZEIT = 0.2; // Sekunden Puffer nach der Landung (siehe mindestAbstand)
+export const ZUSATZ_ZEIT_MAX = 0.9; // bis zu so viele Sekunden extra Lücke, zufällig
 export const DROHNEN_AB_PUNKTEN = 300; // Drohnen tauchen erst nach 300 m auf
 export const DREIER_GRUPPEN_AB_PUNKTEN = 400;
-export const DROHNE_TIEF = 26;         // Abstand Drohnen-Unterkante zum Boden (ducken oder drüber springen)
-export const DROHNE_HOCH = 62;         // hoch: einfach drunter durchlaufen, nicht springen!
+export const DROHNE_TIEF = 26; // Abstand Drohnen-Unterkante zum Boden (ducken oder drüber springen)
+export const DROHNE_HOCH = 62; // hoch: einfach drunter durchlaufen, nicht springen!
 
 /* ---------- Hitbox-Verkleinerung (Fairness) ---------- */
 export const RAND_REX = 8;
@@ -118,8 +118,8 @@ export function rexSchritt(rex, dt, ducken) {
   // Schnellfall nur beim FALLEN (v < 0). Wer beim Steigen duckt, soll
   // den Sprung nicht verlieren.
   const g = GRAVITATION * (ducken && rex.v < 0 ? SCHNELLFALL : 1);
-  rex.v -= g * dt;               // Gravitation bremst/beschleunigt ...
-  rex.hoehe += rex.v * dt;       // ... und die Geschwindigkeit verschiebt die Position
+  rex.v -= g * dt; // Gravitation bremst/beschleunigt ...
+  rex.hoehe += rex.v * dt; // ... und die Geschwindigkeit verschiebt die Position
   if (rex.hoehe <= 0) {
     rex.hoehe = 0;
     rex.v = 0;
@@ -144,10 +144,7 @@ export function rexSchritt(rex, dt, ducken) {
  * zählt NICHT als Treffer. Das ist im Zweifel die fairere Entscheidung.
  */
 export function ueberlappt(a, b) {
-  return a.x < b.x + b.b &&
-         a.x + a.b > b.x &&
-         a.y < b.y + b.h &&
-         a.y + a.h > b.y;
+  return a.x < b.x + b.b && a.x + a.b > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
 /**
@@ -254,11 +251,13 @@ export const BIOME = [
 /** Index der Welt für den Punktestand (nie unter der gewählten Start-Welt). */
 export function biomIndex(punkte, start = 0) {
   let index = 0;
-  BIOME.forEach((b, i) => { if (punkte >= b.ab) index = i; });
+  BIOME.forEach((b, i) => {
+    if (punkte >= b.ab) index = i;
+  });
   return Math.max(index, start);
 }
 
-export const EISZAPFEN_LUECKE = 30;    // so hoch über dem Boden endet ein Eiszapfen: nur Ducken passt drunter
+export const EISZAPFEN_LUECKE = 30; // so hoch über dem Boden endet ein Eiszapfen: nur Ducken passt drunter
 
 export function hindernisErzeugen(punkte, zufallsquelle, biom = BIOME[0]) {
   const zufall = zufallsquelle;
@@ -267,11 +266,16 @@ export function hindernisErzeugen(punkte, zufallsquelle, biom = BIOME[0]) {
   // Eiszapfen hängen von oben bis knapp über den Boden: Springen hilft
   // nicht, nur Ducken (geduckt ist der Rex 24 px hoch, die Lücke 30 px).
   if (biom.eis && zufall() < 0.18) {
-    return { art: "eiszapfen", x: 0, breite: 22, teile: [{ dx: 0, dy: EISZAPFEN_LUECKE, b: 22, h: BODEN_Y - EISZAPFEN_LUECKE }] };
+    return {
+      art: "eiszapfen",
+      x: 0,
+      breite: 22,
+      teile: [{ dx: 0, dy: EISZAPFEN_LUECKE, b: 22, h: BODEN_Y - EISZAPFEN_LUECKE }],
+    };
   }
   // Lava: flach, aber breit. Ein normaler Sprung reicht, nur nicht zu früh.
   if (biom.lava && zufall() < 0.2) {
-    const b = 48 + Math.floor(zufall() * 26);         // 48 bis 73
+    const b = 48 + Math.floor(zufall() * 26); // 48 bis 73
     return { art: "lava", x: 0, breite: b, teile: [{ dx: 0, dy: 0, b, h: 9 }] };
   }
 
@@ -282,7 +286,7 @@ export function hindernisErzeugen(punkte, zufallsquelle, biom = BIOME[0]) {
 
   if (zufall() < 0.3) {
     // Einzelne hohe Energiesäule
-    const h = 52 + Math.floor(zufall() * 15);          // 52 bis 66
+    const h = 52 + Math.floor(zufall() * 15); // 52 bis 66
     return { art: "saeule", x: 0, breite: 22, teile: [{ dx: 0, dy: 0, b: 22, h }] };
   }
 
@@ -294,10 +298,10 @@ export function hindernisErzeugen(punkte, zufallsquelle, biom = BIOME[0]) {
   const teile = [];
   let dx = 0;
   for (let i = 0; i < anzahl; i++) {
-    const b = 20 + Math.floor(zufall() * 7);           // 20 bis 26
-    const h = 34 + Math.floor(zufall() * 25);          // 34 bis 58
+    const b = 20 + Math.floor(zufall() * 7); // 20 bis 26
+    const h = 34 + Math.floor(zufall() * 25); // 34 bis 58
     teile.push({ dx, dy: 0, b, h });
-    dx += b + 3;                                       // 3 px Lücke zwischen den Kristallen
+    dx += b + 3; // 3 px Lücke zwischen den Kristallen
   }
   return { art: "kristall", x: 0, breite: dx - 3, teile };
 }

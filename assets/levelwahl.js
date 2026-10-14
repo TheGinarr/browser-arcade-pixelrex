@@ -30,7 +30,14 @@ export function freiBis(spiel) {
   return Number.isFinite(wert) && wert >= 1 ? Math.floor(wert) : 1;
 }
 
-export function levelWahl({ spiel, namen, nach, beiWahl, gesperrt = () => false, titel = "Level wählen" }) {
+export function levelWahl({
+  spiel,
+  namen,
+  nach,
+  beiWahl,
+  gesperrt = () => false,
+  titel = "Level wählen",
+}) {
   const anzahl = namen.length;
   const box = document.createElement("section");
   box.className = "level-wahl";
@@ -55,13 +62,14 @@ export function levelWahl({ spiel, namen, nach, beiWahl, gesperrt = () => false,
     k.addEventListener("click", () => {
       if (k.disabled) return;
       if (gesperrt()) {
-        info.textContent = "Erst pausieren oder die Runde beenden, dann kannst du das Level wechseln.";
+        info.textContent =
+          "Erst pausieren oder die Runde beenden, dann kannst du das Level wechseln.";
         return;
       }
       aktiv(nummer);
       info.textContent = `Level ${nummer} „${name}“ ist bereit.`;
       beiWahl(nummer);
-      k.blur();                // sonst würde die Leertaste den Knopf erneut drücken
+      k.blur(); // sonst würde die Leertaste den Knopf erneut drücken
     });
     liste.append(k);
     return k;
@@ -74,13 +82,17 @@ export function levelWahl({ spiel, namen, nach, beiWahl, gesperrt = () => false,
       const offen = nummer <= frei;
       k.disabled = !offen;
       k.classList.toggle("gesperrt", !offen);
-      k.setAttribute("aria-label", offen ? `Level ${nummer}: ${namen[i]}` : `Level ${nummer}: noch gesperrt`);
+      k.setAttribute(
+        "aria-label",
+        offen ? `Level ${nummer}: ${namen[i]}` : `Level ${nummer}: noch gesperrt`,
+      );
       k.setAttribute("aria-pressed", String(nummer === gewaehlt));
     });
     if (!info.textContent) {
-      info.textContent = frei >= anzahl
-        ? `Alle ${anzahl} Level freigeschaltet. Danach geht es endlos weiter.`
-        : `${frei} von ${anzahl} Leveln freigeschaltet. Erreiche ein Level einmal, um es hier direkt zu starten.`;
+      info.textContent =
+        frei >= anzahl
+          ? `Alle ${anzahl} Level freigeschaltet. Danach geht es endlos weiter.`
+          : `${frei} von ${anzahl} Leveln freigeschaltet. Erreiche ein Level einmal, um es hier direkt zu starten.`;
     }
   }
 
@@ -94,7 +106,8 @@ export function levelWahl({ spiel, namen, nach, beiWahl, gesperrt = () => false,
   function erreicht(nummer) {
     if (nummer > freiBis(spiel)) {
       speichere(spiel, SCHLUESSEL, Math.min(nummer, anzahl));
-      if (nummer <= anzahl) info.textContent = `Neu freigeschaltet: Level ${nummer} „${namen[nummer - 1]}“.`;
+      if (nummer <= anzahl)
+        info.textContent = `Neu freigeschaltet: Level ${nummer} „${namen[nummer - 1]}“.`;
     }
     zeichnen();
   }

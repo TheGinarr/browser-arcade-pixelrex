@@ -28,23 +28,36 @@ import { bewegungReduziert, gameOverDialog, toplisteAnzeigen } from "./assets/ui
 import { spielSeite, text, TASTE, ansage } from "./assets/mobil.js";
 import { levelWahl } from "./assets/levelwahl.js";
 import {
-  BREITE, HOEHE, BODEN_Y, REX_X,
-  tempoNachZeit, punkteAusStrecke, naechsterAbstand, hindernisErzeugen,
-  neuerRex, sprungStarten, sprungKappen, rexSchritt,
-  rexRechteck, rexHitbox, kollidiertMitHindernis, BIOME, biomIndex,
+  BREITE,
+  HOEHE,
+  BODEN_Y,
+  REX_X,
+  tempoNachZeit,
+  punkteAusStrecke,
+  naechsterAbstand,
+  hindernisErzeugen,
+  neuerRex,
+  sprungStarten,
+  sprungKappen,
+  rexSchritt,
+  rexRechteck,
+  rexHitbox,
+  kollidiertMitHindernis,
+  BIOME,
+  biomIndex,
 } from "./logik.js";
 
 /* ---------- Konstanten (Stellschrauben des Spiels) ---------- */
-const SPIEL = "pixelrex";             // Schlüssel für den Speicher (storage.js)
-const SCHRITT = 1 / 240;              // Physik-Zeitschritt in Sekunden (fest!)
-const MAX_FRAME_ABSTAND_MS = 250;     // siehe einzelbild()
-const BLITZ_DAUER_MS = 650;           // Länge des Aufblitzens nach dem Treffer
-const SPRUNG_PUFFER = 0.12;           // Sekunden, die ein zu früher Tastendruck "gemerkt" wird
-const ERSTES_HINDERNIS_X = 520;       // so weit rechts steht das erste Hindernis
-const SPAWN_LINIE = BREITE + 40;      // ab hier (knapp rechts außerhalb) tauchen neue Hindernisse auf
-const WISCH_SCHWELLE = 24;            // Pixel nach unten, ab denen ein Finger "duckt"
-const SPERRE_NACH_DIALOG_MS = 700;    // siehe dialogEntschaerfen()
-const ZELLE = 4;                      // Kantenlänge eines "Pixels" im Rex-Sprite
+const SPIEL = "pixelrex"; // Schlüssel für den Speicher (storage.js)
+const SCHRITT = 1 / 240; // Physik-Zeitschritt in Sekunden (fest!)
+const MAX_FRAME_ABSTAND_MS = 250; // siehe einzelbild()
+const BLITZ_DAUER_MS = 650; // Länge des Aufblitzens nach dem Treffer
+const SPRUNG_PUFFER = 0.12; // Sekunden, die ein zu früher Tastendruck "gemerkt" wird
+const ERSTES_HINDERNIS_X = 520; // so weit rechts steht das erste Hindernis
+const SPAWN_LINIE = BREITE + 40; // ab hier (knapp rechts außerhalb) tauchen neue Hindernisse auf
+const WISCH_SCHWELLE = 24; // Pixel nach unten, ab denen ein Finger "duckt"
+const SPERRE_NACH_DIALOG_MS = 700; // siehe dialogEntschaerfen()
+const ZELLE = 4; // Kantenlänge eines "Pixels" im Rex-Sprite
 
 // Tastatur-Zuordnung (Kleinbuchstaben, damit "W" und "w" gleich zählen)
 const TASTEN_SPRUNG = new Set([" ", "arrowup", "w"]);
@@ -89,8 +102,9 @@ function mischeMitWeiss(farbe, anteil) {
   const zahl = parseInt(treffer[1], 16);
   // Ein 24-Bit-Wert besteht aus drei Bytes (Rot, Grün, Blau). Mit
   // Bit-Verschiebung (>>) und Maske (& 255) holen wir sie einzeln heraus.
-  const kanaele = [(zahl >> 16) & 255, (zahl >> 8) & 255, zahl & 255]
-    .map((k) => Math.round(k + (255 - k) * anteil));
+  const kanaele = [(zahl >> 16) & 255, (zahl >> 8) & 255, zahl & 255].map((k) =>
+    Math.round(k + (255 - k) * anteil),
+  );
   return `rgb(${kanaele.join(",")})`;
 }
 
@@ -113,40 +127,75 @@ farben.rexHell = mischeMitWeiss(farben.rex, 0.4);
 /* Farben je Welt (im Spielfeld gilt die Welt, außerhalb das Neon-Design).
    himmel = Verlauf oben -> unten. */
 const WELT_FARBEN = [
-  { himmel: ["#07070f", "#16163a"], flaeche: "#111124", flaeche2: "#1c1c40", kristall: "#00e5ff", saeule: "#b28dff" },
-  { himmel: ["#2b1035", "#c4553a"], flaeche: "#3a1c33", flaeche2: "#5e2b3c", kristall: "#ffcf5a", saeule: "#ff8a3d" },
-  { himmel: ["#120404", "#55140a"], flaeche: "#261010", flaeche2: "#3f1912", kristall: "#ff6a2a", saeule: "#ffb03a", lava: "#ff4a1a" },
-  { himmel: ["#04121e", "#16506f"], flaeche: "#0d2436", flaeche2: "#17405c", kristall: "#bff4ff", saeule: "#7fd0ff", eis: "#dff8ff" },
-  { himmel: ["#020208", "#0d0d2e"], flaeche: "#0d0d22", flaeche2: "#17173e", kristall: "#9dff00", saeule: "#ff2d78", lava: "#ff4a1a", eis: "#dff8ff" },
+  {
+    himmel: ["#07070f", "#16163a"],
+    flaeche: "#111124",
+    flaeche2: "#1c1c40",
+    kristall: "#00e5ff",
+    saeule: "#b28dff",
+  },
+  {
+    himmel: ["#2b1035", "#c4553a"],
+    flaeche: "#3a1c33",
+    flaeche2: "#5e2b3c",
+    kristall: "#ffcf5a",
+    saeule: "#ff8a3d",
+  },
+  {
+    himmel: ["#120404", "#55140a"],
+    flaeche: "#261010",
+    flaeche2: "#3f1912",
+    kristall: "#ff6a2a",
+    saeule: "#ffb03a",
+    lava: "#ff4a1a",
+  },
+  {
+    himmel: ["#04121e", "#16506f"],
+    flaeche: "#0d2436",
+    flaeche2: "#17405c",
+    kristall: "#bff4ff",
+    saeule: "#7fd0ff",
+    eis: "#dff8ff",
+  },
+  {
+    himmel: ["#020208", "#0d0d2e"],
+    flaeche: "#0d0d22",
+    flaeche2: "#17173e",
+    kristall: "#9dff00",
+    saeule: "#ff2d78",
+    lava: "#ff4a1a",
+    eis: "#dff8ff",
+  },
 ];
 function weltFarbenSetzen(nr) {
   Object.assign(farben, { lava: "#ff4a1a", eis: "#dff8ff" }, WELT_FARBEN[nr]);
 }
 
 /* ---------- Spielzustand ---------- */
-let rex;                  // { hoehe, v, amBoden } aus logik.js
-let hindernisse;          // [{ art, x, breite, teile }, …]
-let letzterRand;          // rechte Kante des zuletzt erzeugten Hindernisses (wandert mit der Welt nach links)
-let abstandZumNaechsten;  // so viel Platz muss nach letzterRand bis zum nächsten Hindernis sein
-let strecke;              // gelaufene Pixel (Punkte = strecke / 10)
-let laufzeit;             // Sekunden seit Spielstart, steuert das Tempo
+let rex; // { hoehe, v, amBoden } aus logik.js
+let hindernisse; // [{ art, x, breite, teile }, …]
+let letzterRand; // rechte Kante des zuletzt erzeugten Hindernisses (wandert mit der Welt nach links)
+let abstandZumNaechsten; // so viel Platz muss nach letzterRand bis zum nächsten Hindernis sein
+let strecke; // gelaufene Pixel (Punkte = strecke / 10)
+let laufzeit; // Sekunden seit Spielstart, steuert das Tempo
 let punkte;
 let rekordGespeichert = 0;
-let rekordGepulst;        // Puls nur einmal pro Spiel
-let phase;                // "bereit" | "laeuft" | "pause" | "vorbei"
-let welt = 0;             // Index in BIOME
-let startWelt = 0;        // in der Auswahl gewählte Start-Welt
-let banner = "", bannerBis = 0;
-let akkumulator = 0;      // angesammelte, noch nicht "verbrauchte" Zeit in Sekunden
+let rekordGepulst; // Puls nur einmal pro Spiel
+let phase; // "bereit" | "laeuft" | "pause" | "vorbei"
+let welt = 0; // Index in BIOME
+let startWelt = 0; // in der Auswahl gewählte Start-Welt
+let banner = "",
+  bannerBis = 0;
+let akkumulator = 0; // angesammelte, noch nicht "verbrauchte" Zeit in Sekunden
 let letzteZeit = 0;
 let blitzStart = 0;
 let dialogGezeigt = false;
-let partikel = [];        // Staub und Funken (reine Deko)
+let partikel = []; // Staub und Funken (reine Deko)
 let ruhigerModus = bewegungReduziert();
 
 // Eingabe-Zustand
-let sprungPuffer = 0;     // > 0: Sprung wurde gewünscht und wartet auf die Landung
-let tasteSprung = false;  // Sprungtaste gerade gedrückt?
+let sprungPuffer = 0; // > 0: Sprung wurde gewünscht und wartet auf die Landung
+let tasteSprung = false; // Sprungtaste gerade gedrückt?
 let zeigerSprung = false; // Finger/Maus gerade auf dem Spielfeld?
 let tasteDucken = false;
 let zeigerDucken = false;
@@ -180,9 +229,11 @@ function hudAktualisieren() {
 /** Kurzer Puls am Rekordfeld, genau in dem Moment, in dem er geknackt wird. */
 function rekordPulsen() {
   hudRekord.classList.remove("rekord-puls");
-  void hudRekord.offsetWidth;   // erzwingt Neuberechnung des Layouts, damit die Animation neu startet
+  void hudRekord.offsetWidth; // erzwingt Neuberechnung des Layouts, damit die Animation neu startet
   hudRekord.classList.add("rekord-puls");
-  hudRekord.addEventListener("animationend", () => hudRekord.classList.remove("rekord-puls"), { once: true });
+  hudRekord.addEventListener("animationend", () => hudRekord.classList.remove("rekord-puls"), {
+    once: true,
+  });
 }
 
 /* ============================================================
@@ -319,7 +370,7 @@ function dialogAnzeigen() {
     spiel: SPIEL,
     punkte,
     punkteText: `${punkte} m`,
-    richtung: "hoch",                 // bei Pixelrex ist MEHR besser
+    richtung: "hoch", // bei Pixelrex ist MEHR besser
     format: (p) => `${p} m`,
     neustart: neuesSpiel,
   });
@@ -374,13 +425,13 @@ function pauseUmschalten() {
 function sprungDruecken() {
   if (phase === "bereit") {
     spielStarten();
-    sprungPuffer = SPRUNG_PUFFER;     // die erste Eingabe startet UND springt
+    sprungPuffer = SPRUNG_PUFFER; // die erste Eingabe startet UND springt
   } else if (phase === "laeuft") {
     sprungPuffer = SPRUNG_PUFFER;
   } else if (phase === "pause") {
     phase = "laeuft";
   } else if (phase === "vorbei" && dialogGezeigt && !document.getElementById("spiel-dialog")) {
-    neuesSpiel();                     // Dialog wurde mit Esc geschlossen: neu beginnen
+    neuesSpiel(); // Dialog wurde mit Esc geschlossen: neu beginnen
   }
 }
 
@@ -407,7 +458,7 @@ document.addEventListener("keydown", (ereignis) => {
     // Leertaste auf einem fokussierten Knopf/Link soll diesen bedienen
     // (Reset-Knopf, Zusammenklappbox), nicht das Spiel.
     if (taste === " " && ziel instanceof HTMLElement && ziel.matches("button, a, summary")) return;
-    ereignis.preventDefault();               // Pfeil/Leertaste würden sonst scrollen
+    ereignis.preventDefault(); // Pfeil/Leertaste würden sonst scrollen
     tasteSprung = true;
     // Halten der Taste löst Auto-Wiederholung aus (ereignis.repeat).
     // Das soll KEINEN neuen Sprung auslösen, sonst hüpft der Rex ununterbrochen.
@@ -429,7 +480,7 @@ document.addEventListener("keyup", (ereignis) => {
 /* ============================================================
    Eingabe: Tippen, Klicken und Wischen (Pointer Events)
    ============================================================ */
-let zeigerStart = null;   // Punkt, an dem die aktuelle Berührung begann
+let zeigerStart = null; // Punkt, an dem die aktuelle Berührung begann
 
 leinwand.addEventListener("pointerdown", (ereignis) => {
   zeigerStart = { x: ereignis.clientX, y: ereignis.clientY };
@@ -466,17 +517,19 @@ function eingabeVergessen() {
   zeigerDucken = false;
   if (phase === "laeuft") phase = "pause";
 }
-document.addEventListener("visibilitychange", () => { if (document.hidden) eingabeVergessen(); });
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) eingabeVergessen();
+});
 window.addEventListener("blur", eingabeVergessen);
 
 /* ---------- Reset-Knopf ---------- */
 resetKnopf.addEventListener("click", () => {
   spielZuruecksetzen(SPIEL);
   wahl.neuLaden();
-  toplisteAktualisieren();                 // Liste leer, Rekord wieder 0
+  toplisteAktualisieren(); // Liste leer, Rekord wieder 0
   hudAktualisieren();
   if (phase === "laeuft") phase = "pause"; // nicht im Hintergrund weiterspielen
-  resetKnopf.blur();                       // sonst würde die nächste Leertaste den Knopf drücken
+  resetKnopf.blur(); // sonst würde die nächste Leertaste den Knopf drücken
 });
 
 /* ============================================================
@@ -500,7 +553,7 @@ function einzelbild(jetzt) {
   // wären sonst Hunderte Schritte auf einmal fällig.
   const abstandMs = Math.min(jetzt - letzteZeit, MAX_FRAME_ABSTAND_MS);
   letzteZeit = jetzt;
-  ruhigerModus = bewegungReduziert();   // Nutzer kann die Einstellung jederzeit ändern
+  ruhigerModus = bewegungReduziert(); // Nutzer kann die Einstellung jederzeit ändern
 
   if (phase === "laeuft") {
     akkumulator += abstandMs / 1000;
@@ -534,14 +587,14 @@ function einzelbild(jetzt) {
  * "Parallax-Effekt". Weil Bewegung hier nur Deko ist, stehen die Ebenen
  * bei bewegungReduziert() still (sie werden trotzdem gezeichnet).
  */
-const PARALLAX_HINTEN = 0.12;   // Anteil der Weltgeschwindigkeit
+const PARALLAX_HINTEN = 0.12; // Anteil der Weltgeschwindigkeit
 const PARALLAX_VORNE = 0.35;
 
 /** Zufällige Höhen für eine nahtlose Bergkette (letzter Punkt = erster Punkt). */
 function bergkette(anzahl, minHoehe, maxHoehe) {
   const hoehen = [];
   for (let i = 0; i < anzahl; i++) hoehen.push(minHoehe + Math.random() * (maxHoehe - minHoehe));
-  hoehen.push(hoehen[0]);   // schließt die Kachel: rechts passt es wieder an links
+  hoehen.push(hoehen[0]); // schließt die Kachel: rechts passt es wieder an links
   return hoehen;
 }
 const bergeHinten = bergkette(10, 28, 90);
@@ -555,7 +608,11 @@ for (let x = 20; x < BREITE - 40; x += 70 + Math.random() * 90) {
 // Kleine Steine/Striche auf dem Boden, damit man das Tempo sieht
 const bodenMarken = [];
 for (let x = 0; x < BREITE; x += 24 + Math.random() * 50) {
-  bodenMarken.push({ x, y: BODEN_Y + 10 + Math.random() * (HOEHE - BODEN_Y - 20), b: 4 + Math.random() * 10 });
+  bodenMarken.push({
+    x,
+    y: BODEN_Y + 10 + Math.random() * (HOEHE - BODEN_Y - 20),
+    b: 4 + Math.random() * 10,
+  });
 }
 
 /** Lava-Pfütze: glühende Fläche mit aufsteigenden Blasen. */
@@ -569,7 +626,7 @@ function zeichneLava(x, y, b, h, jetzt) {
   z.shadowBlur = 0;
   z.fillStyle = "#ffd25a";
   for (let i = 0; i < b; i += 12) {
-    const t = ruhigerModus ? 0.5 : ((jetzt / 500 + i * 0.13) % 1);
+    const t = ruhigerModus ? 0.5 : (jetzt / 500 + i * 0.13) % 1;
     z.fillRect(x + i + 3, y + 2 - t * 10, 3, 3);
   }
   z.restore();
@@ -637,7 +694,11 @@ function zeichneAlles(jetzt) {
   }
 
   if (phase === "bereit") {
-    zeichneOverlay(`WELT ${welt + 1} · ${BIOME[welt].name.toUpperCase()}`, text("Leertaste, ↑ oder Tippen startet", "Tippen oder SPRUNG startet"), jetzt);
+    zeichneOverlay(
+      `WELT ${welt + 1} · ${BIOME[welt].name.toUpperCase()}`,
+      text("Leertaste, ↑ oder Tippen startet", "Tippen oder SPRUNG startet"),
+      jetzt,
+    );
   } else if (phase === "pause") {
     zeichneOverlay("PAUSE", text("P oder Leertaste: weiter", "Antippen: weiter"), jetzt);
   } else if (phase === "vorbei" && !ruhigerModus) {
@@ -702,7 +763,7 @@ function zeichneBoden() {
   z.fillStyle = farben.linie;
   for (const m of bodenMarken) {
     let x = m.x - versatz;
-    if (x + m.b < 0) x += BREITE;       // links raus = rechts wieder rein
+    if (x + m.b < 0) x += BREITE; // links raus = rechts wieder rein
     z.fillRect(Math.round(x), Math.round(m.y), Math.round(m.b), 2);
   }
 }
@@ -760,15 +821,15 @@ function zeichneSaeule(x, y, b, h) {
   z.shadowBlur = 10;
   z.fillStyle = farben.saeule;
   z.fillRect(x, y + 4, b, h - 4);
-  z.fillRect(x + 3, y, b - 6, 5);             // abgeschrägte "Kappe"
+  z.fillRect(x + 3, y, b - 6, 5); // abgeschrägte "Kappe"
 
   z.shadowBlur = 0;
   z.fillStyle = farben.hintergrund;
   z.globalAlpha = 0.45;
-  for (let sy = y + 14; sy < y + h - 4; sy += 12) z.fillRect(x, sy, b, 2);   // Segmentlinien
+  for (let sy = y + 14; sy < y + h - 4; sy += 12) z.fillRect(x, sy, b, 2); // Segmentlinien
   z.globalAlpha = 0.8;
   z.fillStyle = mischeMitWeiss(farben.saeule, 0.6);
-  z.fillRect(x + b / 2 - 2, y + 8, 4, h - 12);                            // heller Kern
+  z.fillRect(x + b / 2 - 2, y + 8, 4, h - 12); // heller Kern
 }
 
 /** Drohne: gedrehtes Quadrat (Raute) mit Auge. Das Auge blinkt (nur ohne reduzierte Bewegung). */
@@ -789,7 +850,7 @@ function zeichneDrohne(x, y, b, h, jetzt) {
   z.fill();
 
   z.shadowBlur = 0;
-  z.fillStyle = farben.hintergrund;           // dunkle Innen-Raute
+  z.fillStyle = farben.hintergrund; // dunkle Innen-Raute
   z.beginPath();
   z.moveTo(mx - b * 0.22, my);
   z.lineTo(mx, my - h * 0.28);
@@ -801,7 +862,7 @@ function zeichneDrohne(x, y, b, h, jetzt) {
   const blinken = ruhigerModus ? 1 : 0.55 + 0.45 * Math.sin(jetzt / 130);
   z.globalAlpha = blinken;
   z.fillStyle = farben.rex;
-  z.fillRect(mx - 3, my - 3, 6, 6);          // leuchtendes Auge
+  z.fillRect(mx - 3, my - 3, 6, 6); // leuchtendes Auge
 
   // Zwei kleine "Flügel"-Striche links und rechts
   z.globalAlpha = 1;
@@ -886,9 +947,14 @@ function zeichneRex(jetzt) {
   z.shadowColor = farben.rex;
   z.shadowBlur = 8;
   if (ducken) {
-    zeichneSprite(wechsel ? REX_DUCKEN_BILD.laufB : REX_DUCKEN_BILD.laufA, sichtbar.x, sichtbar.y, augenFarbe);
+    zeichneSprite(
+      wechsel ? REX_DUCKEN_BILD.laufB : REX_DUCKEN_BILD.laufA,
+      sichtbar.x,
+      sichtbar.y,
+      augenFarbe,
+    );
   } else {
-    const beine = !laeuft ? REX_BEINE.stehen : (wechsel ? REX_BEINE.laufB : REX_BEINE.laufA);
+    const beine = !laeuft ? REX_BEINE.stehen : wechsel ? REX_BEINE.laufB : REX_BEINE.laufA;
     zeichneSprite([...REX_OBERKOERPER, ...beine], sichtbar.x, sichtbar.y, augenFarbe);
   }
   z.restore();
@@ -897,7 +963,7 @@ function zeichneRex(jetzt) {
 /* ---------- Partikel (Staub und Funken, nur Deko) ---------- */
 
 function staubErzeugen(x, anzahl) {
-  if (ruhigerModus) return;                       // reine Deko → bei reduzierter Bewegung weglassen
+  if (ruhigerModus) return; // reine Deko → bei reduzierter Bewegung weglassen
   for (let i = 0; i < anzahl; i++) {
     partikel.push({
       x: x + Math.random() * 14,
@@ -918,7 +984,8 @@ function funkenErzeugen() {
     const winkel = Math.random() * Math.PI * 2;
     const tempo = 60 + Math.random() * 160;
     partikel.push({
-      x: mitteX, y: mitteY,
+      x: mitteX,
+      y: mitteY,
       vx: Math.cos(winkel) * tempo,
       vy: Math.sin(winkel) * tempo - 40,
       leben: 1,
@@ -932,8 +999,8 @@ function partikelBewegen(sekunden) {
   for (const p of partikel) {
     p.x += p.vx * sekunden;
     p.y += p.vy * sekunden;
-    p.vy += 400 * sekunden;                       // sie fallen leicht nach unten
-    p.leben -= sekunden * 2.2;                    // in ca. 0,45 s ausgeblendet
+    p.vy += 400 * sekunden; // sie fallen leicht nach unten
+    p.leben -= sekunden * 2.2; // in ca. 0,45 s ausgeblendet
   }
   partikel = partikel.filter((p) => p.leben > 0);
 }
