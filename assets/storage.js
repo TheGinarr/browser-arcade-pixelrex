@@ -2,9 +2,10 @@
    storage.js · Gemeinsamer Speicher-Baustein für alle Spiele
    ------------------------------------------------------------
    WARUM GIBT ES DIESE DATEI?
-   Alle Spielstände und Highscores liegen NUR im Browser des
-   Nutzers (localStorage) – nichts wird an den Server geschickt,
-   es gibt keine Cookies. Damit nicht jedes Spiel sein eigenes
+   Alle Spielstände und Highscores liegen im Browser des
+   Nutzers (localStorage). Ausnahme: bestenliste.js meldet den
+   eigenen Bestwert je Spiel an die weltweite Topliste (CT112),
+   es gibt keine eigenen Cookies. Damit nicht jedes Spiel sein eigenes
    Speicher-Chaos baut, laufen alle Zugriffe über dieses Modul.
 
    WICHTIG ZU localStorage:

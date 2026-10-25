@@ -1,0 +1,284 @@
+/* assets/automat.css – Spielhallen-Automat für Arcade-Spiele (eigene Gestaltung).
+   .automat.automat-<spiel>: Leuchtaufsatz (.aut-kopf), Bildschirm (.buehne), Bedienfeld (.steuerbereich aus mobil.js). */
+.automat {
+  --a1: #ff3d7f;
+  --a2: #3dd6ff;
+  --a3: #1a1030;
+  --amax: 600px;
+  max-width: var(--amax);
+  margin: 8px auto 22px;
+  padding: 0 14px 18px;
+  position: relative;
+  background:
+    linear-gradient(
+      90deg,
+      var(--a1) 0 6px,
+      transparent 6px calc(100% - 6px),
+      var(--a1) calc(100% - 6px)
+    ),
+    linear-gradient(180deg, color-mix(in srgb, var(--a3) 80%, #000), #08060f);
+  border-radius: 14px 14px 6px 6px;
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 0 4px color-mix(in srgb, var(--a1) 45%, #000),
+    0 16px 34px #000a;
+}
+.aut-kopf {
+  position: relative;
+  margin: 0 -14px 12px;
+  padding: 12px 14px 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 14px 14px 0 0;
+  border-bottom: 4px solid #000;
+  background:
+    radial-gradient(
+      120% 140% at 50% 0%,
+      color-mix(in srgb, var(--a2) 55%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(180deg, color-mix(in srgb, var(--a3) 60%, var(--a1)), var(--a3));
+  box-shadow: inset 0 0 22px color-mix(in srgb, var(--a2) 50%, transparent);
+}
+.aut-kopf::after {
+  /* Glas-Spiegelung */
+  content: "";
+  position: absolute;
+  inset: 0 0 55% 0;
+  background: linear-gradient(#ffffff2a, transparent);
+  pointer-events: none;
+}
+.aut-kopf svg {
+  width: 54px;
+  height: 54px;
+  flex: none;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--a2) 70%, transparent));
+}
+.aut-titel {
+  font: clamp(1rem, 5.4vw, 1.7rem)/1 var(--pixel);
+  letter-spacing: 0.06em;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow:
+    0 0 6px var(--a1),
+    0 0 16px var(--a1),
+    0 3px 0 #000;
+  animation: aut-neon 3.2s infinite;
+}
+.aut-titel small {
+  display: block;
+  margin-top: 5px;
+  font: 700 0.55rem var(--sans);
+  letter-spacing: 0.3em;
+  color: var(--a2);
+  text-shadow: none;
+}
+@keyframes aut-neon {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.55;
+  }
+  96% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.7;
+  }
+}
+.automat .buehne.arcade-buehne {
+  margin: 0;
+  padding: 12px;
+  border: 0;
+  border-radius: 18px;
+  background: radial-gradient(#1b1b1f, #050506);
+  box-shadow:
+    inset 0 0 0 3px #2a2a30,
+    inset 0 6px 16px #000;
+}
+.automat .buehne canvas {
+  display: block;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 24px color-mix(in srgb, var(--a2) 22%, transparent);
+}
+/* Bedienfeld */
+.automat .steuerbereich {
+  margin: 14px -14px 0;
+  padding: 14px 16px 16px;
+  background: linear-gradient(180deg, #2a2733, #15131b);
+  border-top: 3px solid color-mix(in srgb, var(--a1) 70%, #000);
+  box-shadow: inset 0 8px 14px #0008;
+}
+.automat .gamepad,
+html.touch .automat .gamepad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.automat .gamepad.gp-mitte {
+  justify-content: center;
+}
+.automat .gp-taste {
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1rem;
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--a1) 55%, #fff),
+    var(--a1) 45%,
+    color-mix(in srgb, var(--a1) 55%, #000)
+  );
+  box-shadow:
+    0 5px 0 color-mix(in srgb, var(--a1) 35%, #000),
+    0 0 0 4px #0b0a10,
+    0 0 0 6px #3a3644,
+    0 8px 12px #0008;
+}
+.automat .gp-taste small {
+  color: #fff;
+}
+.automat .gp-taste.gp-breit {
+  width: 72px;
+  height: 56px;
+  border-radius: 28px;
+}
+.automat .gp-rechts .gp-taste {
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--a2) 55%, #fff),
+    var(--a2) 45%,
+    color-mix(in srgb, var(--a2) 50%, #000)
+  );
+  box-shadow:
+    0 5px 0 color-mix(in srgb, var(--a2) 30%, #000),
+    0 0 0 4px #0b0a10,
+    0 0 0 6px #3a3644,
+    0 8px 12px #0008;
+  color: #08121a;
+}
+.automat .gp-rechts .gp-taste small {
+  color: #08121a;
+}
+.automat .gp-kreuz {
+  gap: 4px;
+}
+.automat .gp-kreuz .gp-taste {
+  border-radius: 10px;
+}
+.automat .gp-taste.gedrueckt {
+  transform: translateY(4px);
+  filter: brightness(1.25);
+  box-shadow:
+    0 1px 0 #000,
+    0 0 0 4px #0b0a10,
+    0 0 0 6px #3a3644,
+    0 0 18px var(--a1);
+}
+.automat .werkzeugleiste {
+  justify-content: center;
+  margin-top: 16px;
+}
+.automat .wz-knopf {
+  background: #0b0a10;
+  border-color: #3a3644;
+  color: #ddd;
+}
+.aut-muenze {
+  /* Münzeinwurf unter dem Bedienfeld */
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 14px;
+}
+.aut-muenze span {
+  width: 34px;
+  height: 46px;
+  border-radius: 4px;
+  background: #1c1a22;
+  box-shadow: inset 0 0 0 2px #3a3644;
+  display: grid;
+  place-items: center;
+  font: 0.5rem var(--pixel);
+  color: #ff4d4d;
+  text-shadow: 0 0 4px #ff4d4d;
+}
+.aut-muenze span::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  background: #000;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px #555;
+}
+/* Themen */
+.automat-flattervogel {
+  --a1: #ffb627;
+  --a2: #6fe3ff;
+  --a3: #12355a;
+  --amax: 440px;
+}
+.automat-froschsprung {
+  --a1: #46d160;
+  --a2: #b3ff5c;
+  --a3: #0f3a24;
+  --amax: 600px;
+}
+.automat-mauerbrecher {
+  --a1: #ff5a36;
+  --a2: #ffd23f;
+  --a3: #3a1410;
+  --amax: 600px;
+}
+.automat-meteorsturm {
+  --a1: #a35cff;
+  --a2: #47f0ff;
+  --a3: #120a2e;
+  --amax: 860px;
+}
+.automat-pixelrex {
+  --a1: #f08a24;
+  --a2: #ffe08a;
+  --a3: #3a2410;
+  --amax: 980px;
+}
+@media (max-width: 420px) {
+  .automat {
+    padding: 0 8px 14px;
+  }
+  .aut-kopf {
+    margin: 0 -8px 10px;
+  }
+  .automat .buehne.arcade-buehne {
+    padding: 7px;
+    border-radius: 12px;
+  }
+  .automat .steuerbereich {
+    margin: 12px -8px 0;
+    padding: 12px 10px 14px;
+  }
+  .aut-kopf svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+body.spielmodus .automat {
+  margin: 0 auto;
+}
+body.spielmodus .aut-kopf,
+body.spielmodus .aut-muenze {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aut-titel {
+    animation: none;
+  }
+}

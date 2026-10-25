@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#07070f" />
+    <meta name="theme-color" content="#07070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f3f9" media="(prefers-color-scheme: light)" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/style.css" />
+    <script src="assets/thema.js?v=20261024"></script>
+    <link rel="stylesheet" href="assets/style.css?v=20261024w" />
     <title>Impressum · Browser-Arcade</title>
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Impressum – Browser-Arcade" />
-    <meta property="og:description" content="Anbieterkennzeichnung (Vorlage)." />
+    <meta property="og:title" content="Impressum · Browser-Arcade" />
+    <meta property="og:description" content="Impressum (Vorlage)." />
     <meta property="og:locale" content="de_DE" />
   </head>
   <body>
@@ -20,7 +22,7 @@
       <nav class="container nav" aria-label="Hauptnavigation">
         <a class="marke" href="index.html"><span class="logo">▶</span>GAMES</a>
         <div class="nav-links">
-          <a href="index.html">Zum Spiel</a>
+          <a href="./">Zum Spiel</a>
           <a href="impressum.html" aria-current="page">Impressum</a>
           <a href="datenschutz.html">Datenschutz</a>
         </div>
@@ -38,35 +40,57 @@
         </p>
       </div>
 
-      <section class="rechts-block">
+      <div class="rechts-block">
         <h2>Anbieter</h2>
-        <p>[Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ Ort]<br />[Land]</p>
-      </section>
-      <section class="rechts-block">
+        <address>
+          [Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ Ort]<br />[Land]
+        </address>
+      </div>
+
+      <div class="rechts-block">
         <h2>Kontakt</h2>
         <p>E-Mail: [deine@adresse.example]</p>
-      </section>
-      <section class="rechts-block">
+      </div>
+
+      <div class="rechts-block">
         <h2>Verantwortlich für Inhalte</h2>
-        <p>Verantwortlich nach § 18 Abs. 2 MStV: [Name], Anschrift wie oben.</p>
-      </section>
-      <section class="rechts-block">
+        <p>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV: [Name], Anschrift wie oben.</p>
+      </div>
+
+      <div class="rechts-block">
         <h2>Art des Angebots</h2>
         <p>
-          [Name der Seite] ist eine private, nichtkommerzielle Sammlung kleiner Browserspiele ohne
-          Werbung, Verkauf oder Bezahlfunktionen. Die Casino-Spiele verwenden ausschließlich
-          virtuelles Spielgeld ohne jeden Bezug zu echtem Geld; es bestehen keine Einsatz- oder
-          Kaufmöglichkeiten.
+          [Name der Seite] ist eine private, nichtkommerzielle Sammlung kleiner Browserspiele. Das
+          Angebot enthält keine Werbung, keinen Verkauf, keine Bezahlfunktionen und verfolgt keine
+          Gewinnerzielungsabsicht. Die Casino-Spiele verwenden ausschließlich virtuelles Spielgeld
+          ohne jeden Bezug zu echtem Geld; es bestehen keine Einsatz- oder Kaufmöglichkeiten.
         </p>
-      </section>
-      <section class="rechts-block">
-        <h2>Haftung für Inhalte und Links</h2>
+      </div>
+
+      <div class="rechts-block">
+        <h2>Hinweis zu KI</h2>
         <p>
-          Die Inhalte werden mit Sorgfalt erstellt, eine Gewähr für Vollständigkeit, Aktualität und
-          Richtigkeit wird nicht übernommen. Für Inhalte verlinkter Seiten ist der jeweilige
-          Anbieter verantwortlich.
+          Der Programmcode und die Grafiken der Spiele wurden mit Unterstützung von KI erstellt und
+          anschließend geprüft. Die Spiele selbst enthalten keine KI, mit der man spricht, und es
+          werden keine Daten an KI-Dienste übermittelt.
         </p>
-      </section>
+      </div>
+
+      <div class="rechts-block">
+        <h2>Haftung für Inhalte</h2>
+        <p>
+          Die Inhalte werden mit Sorgfalt erstellt. Eine Gewähr für Vollständigkeit, Aktualität und
+          Richtigkeit wird jedoch nicht übernommen.
+        </p>
+      </div>
+
+      <div class="rechts-block">
+        <h2>Haftung für Links</h2>
+        <p>
+          Für die Inhalte verlinkter, separat betriebener Websites und Dienste ist stets der
+          jeweilige Anbieter beziehungsweise Betreiber verantwortlich.
+        </p>
+      </div>
     </main>
 
     <footer class="fuss">

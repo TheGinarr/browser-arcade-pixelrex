@@ -97,6 +97,14 @@
 }
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+/* lesbar */
+@media (max-width: 600px) {
+  html {
+    font-size: 112.5%;
+  }
 }
 
 /* ---------- 3. Grundlayout ----------------------------------- */
@@ -105,7 +113,7 @@ body {
   min-width: 320px;
   min-height: 100svh;
   color: var(--txt);
-  font: 16px/1.6 var(--sans);
+  font: 1rem/1.6 var(--sans);
   background:
     /* zwei weiche Farb-Glows oben links/rechts … */
     radial-gradient(
@@ -181,7 +189,7 @@ a {
   gap: 12px;
   text-decoration: none;
   font-family: var(--pixel);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
 }
 .marke .logo {
@@ -246,7 +254,7 @@ a {
 .hero .zeile {
   color: var(--ak);
   font-family: var(--pixel);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -375,7 +383,7 @@ a {
   top: 14px;
   right: 14px;
   font-family: var(--pixel);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   padding: 5px 8px;
   border-radius: 6px;
   color: var(--kat);
@@ -434,7 +442,7 @@ a {
   border: 1px solid var(--line);
 }
 .hud-feld .label {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mut);
@@ -551,6 +559,51 @@ a {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Gestaltete Tasten: Kante unten, beim Drücken sinkt die Taste ein */
+.knopf {
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--panel2) 50%, #000),
+    0 6px 10px #0003,
+    inset 0 1px 0 #ffffff24;
+}
+.knopf:hover {
+  transform: translateY(-1px);
+}
+.knopf:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--panel2) 50%, #000),
+    inset 0 2px 4px #0003;
+}
+.knopf.primaer {
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--ak) 45%, #000),
+    0 6px 12px #0004,
+    inset 0 1px 0 #fff9;
+}
+.knopf.primaer:hover {
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--ak) 45%, #000),
+    0 0 22px color-mix(in srgb, var(--ak) 50%, transparent),
+    inset 0 1px 0 #fff9;
+}
+.knopf.primaer:active {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--ak) 45%, #000),
+    inset 0 2px 4px #0004;
+}
+.knopf:disabled,
+.knopf:disabled:active {
+  transform: none;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .knopf:hover,
+  .knopf:active {
+    transform: none;
+  }
 }
 
 /* Game-Over-/Info-Dialog (natives <dialog>-Element) */
@@ -685,6 +738,104 @@ dialog.spiel-dialog .aktionen {
   font-size: 0.9rem;
   border-style: dashed;
   justify-content: center;
+}
+
+/* Reiter über der Topliste: Weltweit / Dieses Gerät / Höchster Kontostand */
+.topliste-reiter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.topliste-reiter button {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--mut);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition:
+    color var(--schnell),
+    border-color var(--schnell);
+}
+.topliste-reiter button:hover {
+  color: var(--txt);
+}
+.topliste-reiter button[aria-pressed="true"] {
+  color: var(--ak);
+  border-color: var(--ak);
+}
+.topliste-reiter button:focus-visible {
+  outline: 2px solid var(--ak);
+  outline-offset: 2px;
+}
+/* Eigener Eintrag in der weltweiten Liste */
+.topliste li.du .name::after {
+  content: " (du)";
+  font-family: var(--sans);
+  letter-spacing: 0;
+  color: var(--mut);
+}
+.topliste.ruhig li {
+  animation: none;
+}
+.topliste-fuss {
+  margin: 2px 0 0;
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: var(--mut);
+}
+
+.topliste-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: var(--mut);
+}
+.topliste-name .initialen.klein {
+  margin-left: 0;
+}
+.topliste-name button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--txt);
+  cursor: pointer;
+}
+.topliste-name button:focus-visible {
+  outline: 2px solid var(--ak, var(--cyan));
+  outline-offset: 2px;
+}
+.topliste-name-meldung {
+  min-width: 1ch;
+}
+
+/* Startseite: weltweite Liste Spieler-Level / längste Serie */
+.weltliste {
+  margin-top: 22px;
+}
+#spieler-welt > * {
+  max-width: 460px;
+}
+.weltliste h3 {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+  color: var(--kat, var(--ak));
+}
+.loesch-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 0;
 }
 
 /* Casino-Bausteine: Einsatz-Chips + Wallet-Leiste ------------- */
@@ -1321,7 +1472,7 @@ dialog.spiel-dialog .aktionen {
 .rk-kopf {
   margin: 0;
   font-family: var(--pixel);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.16em;
   color: var(--mut);
 }
@@ -1427,7 +1578,7 @@ dialog.spiel-dialog .aktionen {
 }
 .rk-faktor {
   font-family: var(--pixel);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   text-align: left;
 }
 .rk-wert {
@@ -1935,7 +2086,7 @@ html.touch .gamepad.gp-mitte {
     border-radius: 10px;
   }
   .hud-feld .label {
-    font-size: 0.62rem;
+    font-size: 0.75rem;
     letter-spacing: 0.04em;
   }
   .hud-feld .wert {
@@ -1993,7 +2144,7 @@ html.touch .gamepad.gp-mitte {
     height: 34px;
   }
   .karte h3 {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   .karte p {
     font-size: 0.84rem;
@@ -2123,7 +2274,7 @@ body.spielmodus .steuerbereich {
   background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 .kategorie h2 .alters-hinweis {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   vertical-align: middle;
 }
 
@@ -2177,3 +2328,112 @@ dialog.spiel-dialog .spruch {
   color: var(--txt);
   opacity: 0.85;
 }
+
+/* ---------- 20. Hell-Modus nach Systemeinstellung (2026-10-23) ----------
+   Nur Farb-Variablen + wenige feste Stellen. Spielgeräte (Automaten,
+   Handheld, Canvas-Felder) bleiben bewusst dunkel wie echte Geräte. */
+:root {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:where(:not([data-thema="dunkel"])) {
+    color-scheme: light;
+    --bg: #f2f3f9;
+    --panel: #ffffff;
+    --panel2: #e9ebf6;
+    --line: #c3c7e0;
+    --txt: #14162a;
+    --mut: #565b7c;
+    --pink: #c8125a;
+    --cyan: #00748c;
+    --lime: #3c7600;
+    --gold: #946000;
+    --violet: #6a45d1;
+  }
+  :where(:root:not([data-thema="dunkel"])) .raster {
+    background-image:
+      linear-gradient(#1a1d4008 1px, transparent 1px),
+      linear-gradient(90deg, #1a1d4008 1px, transparent 1px);
+  }
+  :where(:root:not([data-thema="dunkel"])) .marke .logo,
+  :where(:root:not([data-thema="dunkel"])) .knopf.primaer {
+    color: #fff;
+  }
+  :where(:root:not([data-thema="dunkel"])) dialog.spiel-dialog::backdrop {
+    background: #1a1d40aa;
+  }
+  :where(:root:not([data-thema="dunkel"])) .kopf {
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+  }
+  :where(:root:not([data-thema="dunkel"])) kbd {
+    background: var(--panel);
+    color: var(--txt);
+    border-color: var(--line);
+  }
+}
+
+:root:where([data-thema="hell"]) {
+  color-scheme: light;
+  --bg: #f2f3f9;
+  --panel: #ffffff;
+  --panel2: #e9ebf6;
+  --line: #c3c7e0;
+  --txt: #14162a;
+  --mut: #565b7c;
+  --pink: #c8125a;
+  --cyan: #00748c;
+  --lime: #3c7600;
+  --gold: #946000;
+  --violet: #6a45d1;
+}
+:where(:root[data-thema="hell"]) .raster {
+  background-image:
+    linear-gradient(#1a1d4008 1px, transparent 1px),
+    linear-gradient(90deg, #1a1d4008 1px, transparent 1px);
+}
+:where(:root[data-thema="hell"]) .marke .logo,
+:where(:root[data-thema="hell"]) .knopf.primaer {
+  color: #fff;
+}
+:where(:root[data-thema="hell"]) dialog.spiel-dialog::backdrop {
+  background: #1a1d40aa;
+}
+:where(:root[data-thema="hell"]) .kopf {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+:where(:root[data-thema="hell"]) kbd {
+  background: var(--panel);
+  color: var(--txt);
+  border-color: var(--line);
+}
+
+:root[data-thema="dunkel"] {
+  color-scheme: dark;
+}
+:root[data-thema="hell"] {
+  color-scheme: light;
+}
+.thema-knopf {
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  min-width: 2.4rem;
+  min-height: 2.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--txt);
+  cursor: pointer;
+}
+.thema-knopf:hover {
+  border-color: var(--cyan);
+}
+.thema-knopf:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* p19 doppeltipp */
+html {
+  touch-action: manipulation;
+} /* kein Doppeltipp-Zoom, Pinch-Zoom bleibt */

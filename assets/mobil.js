@@ -198,7 +198,7 @@ export function spielSeite(optionen = {}) {
   }
   knoepfe.push(`
     <button type="button" class="wz-knopf" data-aktion="spielmodus" aria-pressed="false">
-      <span aria-hidden="true">⛶</span> <span class="wz-text">Spielmodus</span>
+      <svg aria-hidden="true" viewBox="0 0 16 16" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg> <span class="wz-text">Spielmodus</span>
     </button>`);
   knoepfe.push(`
     <button

@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#07070f" />
+    <meta name="theme-color" content="#07070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f3f9" media="(prefers-color-scheme: light)" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="assets/style.css" />
+    <script src="assets/thema.js?v=20261024"></script>
+    <link rel="stylesheet" href="assets/style.css?v=20261024w" />
     <title>Datenschutz · Browser-Arcade</title>
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Datenschutzerklärung – Browser-Arcade" />
-    <meta property="og:description" content="Datenschutzhinweise (Vorlage)." />
+    <meta property="og:title" content="Datenschutz · Browser-Arcade" />
+    <meta property="og:description" content="Datenschutz (Vorlage)." />
     <meta property="og:locale" content="de_DE" />
   </head>
   <body>
@@ -20,7 +22,7 @@
       <nav class="container nav" aria-label="Hauptnavigation">
         <a class="marke" href="index.html"><span class="logo">▶</span>GAMES</a>
         <div class="nav-links">
-          <a href="index.html">Zum Spiel</a>
+          <a href="./">Zum Spiel</a>
           <a href="impressum.html">Impressum</a>
           <a href="datenschutz.html" aria-current="page">Datenschutz</a>
         </div>
@@ -38,63 +40,161 @@
         </p>
       </div>
 
-      <section class="rechts-block">
+      <div class="rechts-block">
         <h2>1. Verantwortlicher</h2>
         <p>
-          [Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ Ort]<br />E-Mail:
+          [Vor- und Nachname]<br />[Straße und Hausnummer]<br />[PLZ Ort]<br />[Land]<br />E-Mail:
           [deine@adresse.example]
         </p>
-      </section>
-      <section class="rechts-block">
+      </div>
+
+      <div class="rechts-block">
         <h2>2. Grundsatz</h2>
         <p>
           Diese Website kommt ohne Nutzerkonten, Formulare, eigene Cookies sowie Tracking- oder
-          Analysedienste aus. Es werden keine Spielstände oder sonstigen Nutzerdaten an den Server
-          übertragen.
+          Analysedienste aus. Spielstände und Einstellungen bleiben im Browser (Nr.&nbsp;3). An den
+          Server übertragen wird nur der eigene Bestwert je Spiel für die öffentliche Topliste
+          (Nr.&nbsp;3a) – mit frei wählbaren Initialen und einer zufälligen Geräte-Kennung, ohne
+          IP-Adresse oder Namen. Wer freiwillig gemeinsam an einem Tisch spielt, nutzt zusätzlich
+          die Mehrspieler-Vermittlung (Nr.&nbsp;3b).
         </p>
-      </section>
-      <section class="rechts-block">
+      </div>
+
+      <div class="rechts-block">
         <h2>3. Lokale Speicherung im Browser (localStorage)</h2>
         <p>
-          Die Spiele speichern Spielstände, Einstellungen, freigeschaltete Level und Highscores
-          (z.&nbsp;B. Punktzahlen und frei wählbare Initialen) ausschließlich im localStorage des
-          verwendeten Browsers. Diese Daten verbleiben auf dem Endgerät und werden nicht übertragen.
-          Die Speicherung ist für die ausdrücklich gewünschte Funktion unbedingt erforderlich (§ 25
-          Abs. 2 Nr. 2 TDDDG). Löschen lassen sich die Daten über die Reset-Knöpfe der Spiele oder
-          die Browser-Einstellungen.
+          Die Spiele speichern Spielstände, Einstellungen und Highscores (z.&nbsp;B. Punktzahlen und
+          frei wählbare Initialen) im localStorage des verwendeten Browsers. Diese Daten verbleiben
+          auf dem Endgerät und sind für andere Besucher nicht einsehbar – mit Ausnahme des eigenen
+          Bestwerts je Spiel, der für die öffentliche Topliste übertragen wird (Nr.&nbsp;3a). Dafür
+          legt der Browser beim ersten Eintrag eine zufällige Geräte-Kennung an (128 Bit Zufall,
+          ohne Bezug zu Gerät, Person oder IP-Adresse) und speichert sie ebenfalls im localStorage.
         </p>
-      </section>
-      <section class="rechts-block">
+        <p>
+          Die Speicherung ist für die ausdrücklich gewünschte Funktion – das Merken von Spielständen
+          und Highscores – unbedingt erforderlich im Sinne von § 25 Abs. 2 Nr. 2 TDDDG; eine
+          Einwilligung (Cookie-Banner) ist daher nicht notwendig. Die Daten lassen sich jederzeit
+          selbst löschen: über die Reset-Funktionen der Spiele oder über die Browser-Einstellungen
+          („Websitedaten löschen").
+        </p>
+      </div>
+
+      <div class="rechts-block" id="topliste">
+        <h2>3a. Öffentliche Topliste</h2>
+        <p>
+          Erreicht man in einem Spiel einen neuen persönlichen Bestwert, sendet der Browser an den
+          eigenen Spiele-Server: den Namen des Spiels, die Punktzahl, die frei wählbaren Initialen
+          (höchstens 3 Zeichen) und die zufällige Geräte-Kennung aus Nr.&nbsp;3. Gespeichert werden
+          je Spiel und Kennung nur der Bestwert, die Initialen, das Datum und der Zeitpunkt der
+          letzten Aktivität. Die IP-Adresse wird vom Spiele-Server nicht gespeichert (zu den
+          Logfiles des Webservers siehe Nr.&nbsp;4). Öffentlich sichtbar sind nur Initialen,
+          Punktzahl und Datum; die Kennung wird nie angezeigt und dient nur dazu, den eigenen
+          Eintrag wiederzufinden. Auf der Startseite wird außerdem das eigene Spieler-Level und die
+          längste Tages-Serie (aus dem lokalen Fortschritt, Nr.&nbsp;3) auf dieselbe Weise als
+          Bestwert übertragen.
+        </p>
+        <p>
+          Zweck ist die vom Spieler gewünschte Funktion einer gemeinsamen Bestenliste;
+          Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;b DSGVO, für das Speichern der
+          Kennung im Browser § 25 Abs. 2 Nr. 2 TDDDG. Einträge werden 12&nbsp;Monate nach der
+          letzten Aktivität automatisch gelöscht. Anstößige Initialen werden durch „???“ ersetzt.
+          Die eigenen Einträge lassen sich jederzeit selbst löschen:
+        </p>
+        <p class="loesch-zeile">
+          <button type="button" class="knopf" data-topliste-loeschen="#loesch-meldung">
+            Meine Topliste-Einträge löschen
+          </button>
+          <span id="loesch-meldung" role="status"></span>
+        </p>
+        <p>
+          Wer den Browser-Speicher leert, verliert die Kennung; die alten Einträge sind dann nicht
+          mehr zuzuordnen und laufen nach 12&nbsp;Monaten ab – oder werden auf Anfrage (Nr.&nbsp;7)
+          gelöscht.
+        </p>
+      </div>
+
+      <div class="rechts-block" id="mehrspieler">
+        <h2>3b. Mehrspieler (gemeinsamer Tisch mit Code)</h2>
+        <p>
+          Einige Spiele (z.&nbsp;B. Blackjack) lassen sich auf Wunsch gemeinsam spielen: Eine Person
+          eröffnet einen Tisch und erhält einen 4-stelligen Code, andere treten mit diesem Code bei.
+          Unser Spiele-Server vermittelt dabei nur den Verbindungsaufbau zwischen den Browsern
+          (technische Verbindungsangebote). Er hält den Tisch ausschließlich im Arbeitsspeicher und
+          speichert weder Inhalte noch IP-Adressen; ein Tisch verschwindet spätestens
+          10&nbsp;Minuten nach dem letzten Lebenszeichen, höchstens nach 6&nbsp;Stunden. Es gibt
+          keinen Chat und keine Namen.
+        </p>
+        <p>
+          Die Spielzüge laufen danach <strong>direkt zwischen den Browsern</strong> (WebRTC). Dafür
+          ist technisch nötig, dass die Mitspieler am Tisch die <strong>IP-Adresse</strong> der
+          anderen Teilnehmer erhalten. Darauf weist auch der Beitritts-Dialog hin. Damit der Browser
+          seine öffentliche Adresse ermitteln kann, fragt er einen STUN-Server von Cloudflare
+          (Voreinstellung im Code: stun.cloudflare.com, anpassbar in
+          <code>assets/mehrspieler.js</code>) an; dabei wird die IP-Adresse an Cloudflare
+          übermittelt.
+        </p>
+        <p>
+          Rechtsgrundlage ist Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;b DSGVO (die ausdrücklich gewünschte
+          Mehrspieler-Funktion). Wer das nicht möchte, spielt einfach allein – dann findet keine
+          dieser Verbindungen statt. Zur Wiederverbindung merkt sich der Browser den Tisch-Code nur
+          für die aktuelle Sitzung (sessionStorage).
+        </p>
+      </div>
+
+      <div class="rechts-block">
         <h2>4. Server-Logfiles</h2>
         <p>
           [Beschreibe hier, welche Daten dein Webserver oder Hoster protokolliert (z.&nbsp;B.
           IP-Adresse, Zeitpunkt, aufgerufene Datei, User-Agent), auf welcher Rechtsgrundlage (meist
-          Art. 6 Abs. 1 lit. f DSGVO) und wann sie gelöscht werden.]
+          Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO) und wann sie gelöscht werden.]
         </p>
-      </section>
-      <section class="rechts-block">
+      </div>
+
+      <div class="rechts-block">
         <h2>5. Hosting / CDN</h2>
         <p>
-          [Falls du einen Hoster, Reverse Proxy oder ein CDN nutzt: Anbieter, Zweck, Rechtsgrundlage
-          und ggf. Drittlandübermittlung nennen. Sonst diesen Abschnitt löschen.]
+          [Nenne hier deinen Hoster bzw. ein vorgeschaltetes CDN mit Anschrift, welche Daten dort
+          verarbeitet werden, die Rechtsgrundlage und ggf. die Grundlage für Übermittlungen in
+          Drittländer. Ohne CDN kann dieser Abschnitt entfallen.]
         </p>
-      </section>
-      <section class="rechts-block">
+      </div>
+
+      <div class="rechts-block">
         <h2>6. Schriftarten</h2>
         <p>
-          Die Schriftarten (IBM Plex und Press Start 2P, SIL Open Font License 1.1) werden lokal vom
-          eigenen Server ausgeliefert. Es werden keine Verbindungen zu Font-Diensten Dritter
+          Die verwendeten Schriftarten (IBM Plex und Press Start 2P, jeweils SIL Open Font License
+          1.1) werden lokal vom eigenen Webserver ausgeliefert. Externe Font-Dienste (z.&nbsp;B.
+          Google Fonts) werden nicht eingebunden; es werden keine Verbindungen zu Drittanbietern
           aufgebaut.
         </p>
-      </section>
-      <section class="rechts-block">
-        <h2>7. Betroffenenrechte</h2>
+      </div>
+
+      <div class="rechts-block">
+        <h2>7. Kontakt per E-Mail</h2>
         <p>
-          Betroffene haben die Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der
-          Verarbeitung und Widerspruch (Art. 15 bis 21 DSGVO) sowie ein Beschwerderecht bei einer
-          Datenschutzaufsichtsbehörde, zuständig ist: [Aufsichtsbehörde deines Bundeslandes].
+          Bei einer Kontaktaufnahme per E-Mail werden die übermittelten Angaben ausschließlich zur
+          Bearbeitung der Anfrage verwendet und nicht weitergegeben (Art. 6 Abs. 1 lit. b und f
+          DSGVO).
         </p>
-      </section>
+      </div>
+
+      <div class="rechts-block">
+        <h2>8. Externe Links</h2>
+        <p>
+          Links werden erst beim Anklicken geöffnet. Für die Datenverarbeitung auf den jeweiligen
+          Zielseiten ist deren Betreiber verantwortlich.
+        </p>
+      </div>
+
+      <div class="rechts-block">
+        <h2>9. Betroffenenrechte</h2>
+        <p>
+          Betroffene haben gegenüber dem Verantwortlichen die Rechte auf Auskunft, Berichtigung,
+          Löschung, Einschränkung der Verarbeitung und Widerspruch gemäß Art. 15 bis 21 DSGVO. Zudem
+          besteht ein Beschwerderecht bei einer Datenschutzaufsichtsbehörde, zuständig ist:
+          [Aufsichtsbehörde deines Bundeslandes].
+        </p>
+      </div>
     </main>
 
     <footer class="fuss">
@@ -107,5 +207,6 @@
       </div>
     </footer>
     <script type="module" src="assets/keks.js"></script>
+    <script type="module" src="assets/bestenliste.js?v=20261023"></script>
   </body>
 </html>

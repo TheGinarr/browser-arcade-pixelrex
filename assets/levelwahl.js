@@ -8,7 +8,7 @@
    endlos weiter, die Auswahl zeigt aber nur die festen.
 
    Benutzung in einem Spiel:
-     import { levelWahl } from "./assets/levelwahl.js";
+     import { levelWahl } from "../assets/levelwahl.js";
      const wahl = levelWahl({
        spiel: "mauerbrecher",
        namen: ["Klassik", "Pyramide", …],

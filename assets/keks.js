@@ -26,7 +26,7 @@ function zeigen() {
   box.setAttribute("aria-label", "Hinweis zu Cookies");
   box.innerHTML = `
     <p><span aria-hidden="true">🍪</span> Diese Website verwendet keine eigenen Cookies.
-      Deine Highscores bleiben in deinem Browser, Kekse musst du selbst mitbringen.
+      Spielstände bleiben in deinem Browser, Kekse musst du selbst mitbringen.
       <a href="${basis}datenschutz.html">Datenschutz</a></p>
     <div class="keks-knoepfe">
       <button type="button" class="knopf">Zur Kenntnis genommen</button>

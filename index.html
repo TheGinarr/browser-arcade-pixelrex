@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#07070f" />
+    <meta name="theme-color" content="#07070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f3f9" media="(prefers-color-scheme: light)" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./assets/style.css" />
+    <script src="./assets/thema.js?v=20261024"></script>
+    <link rel="stylesheet" href="./assets/style.css?v=20261024w" />
+    <link rel="stylesheet" href="./assets/automat.css?v=20261024" />
     <title>PIXELREX · Browser-Arcade</title>
     <meta
       name="description"
@@ -44,17 +47,30 @@
           <div class="wert" id="hud-welt">1</div>
         </div>
       </div>
-      <div class="buehne">
-        <!-- Logisch 640x240 Pixel. Die CSS-Breite (100%, max. 960px) skaliert das Bild nur;
+      <div class="automat automat-pixelrex">
+        <div class="aut-kopf" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <g fill="#5f8f3a" stroke="#000" stroke-width="1.5">
+              <path d="M28 10h20v14h-8v4h6v4h-10v8l-6 6v10h-4v-6h-2v6h-4V40l-8-6v-6h4v4h4V10z" />
+            </g>
+            <rect x="32" y="13" width="3" height="3" fill="#000" />
+            <path d="M52 58V42h4v-6h4v22" fill="#2f7a3a" stroke="#000" stroke-width="1.5" />
+            <path d="M2 58h60" stroke="#ffe08a" stroke-width="2" /></svg
+          ><span class="aut-titel">PIXELREX<small>LAUF, SPRING, DUCK DICH</small></span>
+        </div>
+        <div class="buehne">
+          <!-- Logisch 640x240 Pixel. Die CSS-Breite (100%, max. 960px) skaliert das Bild nur;
            die Spiellogik rechnet immer in den 640er-Koordinaten. -->
-        <canvas
-          id="leinwand"
-          width="640"
-          height="240"
-          role="img"
-          aria-label="Pixelrex-Spielfeld: ein pinker Pixel-Dino läuft über einen Neon-Boden und weicht Kristallen und Drohnen aus"
-          style="max-width: 960px; margin-inline: auto; image-rendering: pixelated"
-        ></canvas>
+          <canvas
+            id="leinwand"
+            width="640"
+            height="240"
+            role="img"
+            aria-label="Pixelrex-Spielfeld: ein pinker Pixel-Dino läuft über einen Neon-Boden und weicht Kristallen und Drohnen aus"
+            style="max-width: 960px; margin-inline: auto; image-rendering: pixelated"
+          ></canvas>
+        </div>
+        <div class="aut-muenze" aria-hidden="true"><span></span><span></span></div>
       </div>
       <p class="steuerung">
         <span class="nur-tastatur"
@@ -67,9 +83,7 @@
         >
       </p>
       <section style="max-width: 420px; margin-top: 36px">
-        <h2 style="font-family: var(--pixel); font-weight: 400; font-size: 0.85rem">
-          Lokale Top 3
-        </h2>
+        <h2 style="font-family: var(--pixel); font-weight: 400; font-size: 0.85rem">Topliste</h2>
         <div id="topliste"></div>
         <button class="knopf" id="reset" style="margin-top: 10px">Spielstand zurücksetzen</button>
       </section>
